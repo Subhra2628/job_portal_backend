@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(JOB_SEEKER)
+  createdAt DateTime @default(now())
+
+  jobs         Job[]
+  applications Application[]
+  profile      Profile?
+  resume       Resume?
+}
+
+enum Role {
+  JOB_SEEKER
+  RECRUITER
+}
+
+model Application {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  jobId     Int
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+}
+model Job {
+  id          Int     @id @default(autoincrement())
+  title       String
+  company     String
+  location    String
+  description String @db.Text
+  salary      String?
+   category   String?
+isActive Boolean @default(true)
+  minSalary   Int?
+  maxSalary   Int?
+  workMode    String?
+  createdAt   DateTime  @default(now())
+  jobType     String?
+  
+  experience  String?
+  skills      String?
+  deadline    DateTime?
+  vacancies   Int       @default(1)
+  recruiterId Int
+  recruiter   User      @relation(fields: [recruiterId], references: [id])
+
+  applications Application[]
+}
+
+model Profile {
+  id     Int @id @default(autoincrement())
+  userId Int @unique
+  name           String?
+  photo          String?
+  phone          String?
+  location       String?
+  skills         String?
+  experience     Int?
+  currentSalary  String?
+  expectedSalary String?
+  noticePeriod   String?
+  githubUrl      String?
+  resumeUrl      String?
+  linkedinUrl    String?
+  jobPreferences String?
+
+  bio                String?
+  companyName        String?
+  companyWebsite     String?
+  companyDescription String? @db.Text
+  companyLogo        String?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model OtpVerification {
+  id        Int      @id @default(autoincrement())
+  email     String
+  otp       String
+  verified  Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+model Resume {
+  id     Int @id @default(autoincrement())
+  userId Int @unique
+
+  fullName String
+  email    String
+  phone    String?
+  location String?
+  headline String?
+  summary  String?
+
+  linkedin  String?
+  github    String?
+  portfolio String?
+
+  education       Json?
+  skills          Json?
+  experience      Json?
+  projects        Json?
+  certifications  Json?
+  languages       Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Subscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE `job` ADD COLUMN `category` VARCHAR(191) NULL,
+    ADD COLUMN `deadline` DATETIME(3) NULL,
+    ADD COLUMN `experience` VARCHAR(191) NULL,
+    ADD COLUMN `jobType` VARCHAR(191) NULL,
+    ADD COLUMN `skills` VARCHAR(191) NULL,
+    ADD COLUMN `vacancies` INTEGER NOT NULL DEFAULT 1;

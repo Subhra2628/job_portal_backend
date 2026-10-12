@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE `job` ADD COLUMN `maxSalary` INTEGER NULL,
+    ADD COLUMN `minSalary` INTEGER NULL,
+    ADD COLUMN `workMode` VARCHAR(191) NULL;
